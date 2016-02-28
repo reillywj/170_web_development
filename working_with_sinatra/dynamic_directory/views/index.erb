@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @title || "File Director"%></title>
+  </head>
+  <body>
+    <h1>Public Directory Files</h1>
+    <% if @sort_order > 0 %>
+      <p><a href="/?sort=asc">Sort Ascending</a></p>
+    <% elsif %>
+      <p><a href="/?sort=desc">Sort Descending</a></p>
+    <% end %>
+    <ul>
+      <% @files.sort {|a, b| @sort_order * (a <=> b)}.each do |file| %>
+        <li><a href="<%= file %>"><%= file %></a></li>
+      <% end %>
+    </ul>
+  </body>
+</html>
