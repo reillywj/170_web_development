@@ -1,4 +1,7 @@
 class HTTPParser
+  def self.parse(request)
+    [method(request), path(request), params(request)]
+  end
 
   def self.method(request)
     initial_split(request).first
@@ -11,7 +14,6 @@ class HTTPParser
   def self.params(request)
     raw_params = path_and_params(request)[1]
     return_hash = {}
-
     raw_params.split('&').each do |pair|
       key, value = pair.split('=')
       return_hash[key] = value
@@ -25,6 +27,6 @@ class HTTPParser
   end
 
   def self.initial_split(request)
-    request.split(' ') if request
+    request.split(' ')
   end
 end

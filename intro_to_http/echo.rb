@@ -1,17 +1,8 @@
 require 'socket'
 require_relative 'http_parser'
+require_relative 'html_tags'
 
 server = TCPServer.new("localhost", 3003)
-
-def wrap(client, tag_char = 'p')
-  client.puts "<#{tag_char}>"
-  yield if block_given?
-  client.puts "</#{tag_char}>"
-end
-
-def hr(client)
-  client.puts "<hr>"
-end
 
 def print_rolls(client, rolls)
   rolls.each_with_index do |roll, index|
@@ -70,33 +61,39 @@ def roll_dice(params, client)
   rolls
 end
 
+def return_body(client, params)
+  rolls = roll_dice params, client
+  summarize client, rolls, params
+end
+
 loop do
   client = server.accept
 
   request_line = client.gets
   puts request_line
 
+  next unless request_line
+
   # client.puts request_line
 # GET /?rolls=2&sides=6 HTTP/1.1
-  http_method = HTTPParser.method(request_line)
-  path = HTTPParser.path(request_line)
-  params = HTTPParser.params(request_line)
+  # http_method = HTTPParser.method(request_line)
+  # path = HTTPParser.path(request_line)
+  # params = HTTPParser.params(request_line)
+  http_method, path, params = HTTPParser.parse(request_line)
   client.puts "HTTP/1.0 200 OK"
   client.puts "ContentType: text/html"
   client.puts
-  client.puts "<html>"
-  client.puts "<body>"
-  client.puts "<pre>"
-  client.puts "Method: #{http_method}"
-  client.puts "Path: #{path}"
-  client.puts "Params: #{params}"
-  client.puts "</pre>"
+  wrap(client, 'html') do
+    wrap(client, 'body') do
+      wrap(client, 'pre') do
+        client.puts "Method: #{http_method}"
+        client.puts "Path: #{path}"
+        client.puts "Params: #{params}"
+      end
 
-  rolls = roll_dice params, client
-  summarize client, rolls, params
-
-  client.puts "</body>"
-  client.puts "</html>"
+      return_body client, params
+    end
+  end
 
   client.close
 end
