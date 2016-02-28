@@ -11,10 +11,15 @@ def roll_dice(params, client)
   client.puts "#{rolls} rolls of #{sides}-sided dice"
   rolls.to_i.times do |num|
     roll = rand(sides.to_i) + 1
-    client.puts "Roll #{num + 1}: #{roll}"
+    client.puts "Roll #{num + 1}: #{roll}" if rolls.to_i > 1
+    client.puts "Roll: #{roll}" if rolls.to_i == 1
     sum += roll
   end
-  client.puts "Sum of Roll: #{sum}" if rolls.to_i > 1
+
+  if rolls.to_i > 1
+    client.puts "Sum of Roll: #{sum}"
+    client.puts "Average: #{sum.to_f / rolls.to_f}"
+  end
 end
 
 loop do
