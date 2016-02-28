@@ -2,14 +2,26 @@ require "sinatra"
 require "sinatra/reloader"
 require 'tilt/erubis'
 
-get "/" do
-  # File.read "public/template.html"
-  # erb :home
-  @title = 'The Adventures of Sherlock Holmes'
+before do
+  @book_title = 'The Adventures of Sherlock Holmes'
   @author = 'Sir Arthur Doyle'
-  @chapters = []
-  File.open('./data/toc.txt').each do |line|
-    @chapters << line.chomp
-  end
+  @chapters = File.readlines('data/toc.txt')
+end
+
+get '/' do
+  
+  erb :index
+end
+
+get "/" do
+  @title = @book_title
   erb :home
+end
+
+get '/chapter/:number' do
+  @chapter_number = params['number']
+  @title = "#{@chapter_number}: #{@chapters[@chapter_number.to_i - 1]}"
+  @text = File.read("data/chp#{@chapter_number}.txt")
+
+  erb :chapter
 end

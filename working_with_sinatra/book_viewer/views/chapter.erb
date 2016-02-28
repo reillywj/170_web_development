@@ -39,17 +39,8 @@
         </div>
 
         <div class="content">
-          <h2 class="content-subhead">Table of Contents</h2>
-
-          <div class="pure-menu">
-            <ul class="pure-menu-list">
-              <% @chapters.each_with_index do |chapter, index| %>
-                <li class="pure-menu-item">
-                  <a href="#" class="pure-menu-link">Chapter <%= index + 1 %>: <%= chapter %></a>
-                </li>
-              <% end %>
-            </ul>
-          </div>
+          <h2 class="content-subhead">Chapter <%= @chapter_number%>: <%= @chapters[@chapter_number.to_i - 1] %></h2>
+          <%= @text %>
         </div>
       </div>
   </div>
