@@ -25,6 +25,6 @@ class HTTPParser
   end
 
   def self.initial_split(request)
-    request.split(' ')
+    request.split(' ') if request
   end
 end
