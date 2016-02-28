@@ -40,8 +40,12 @@ def summarize(client, rolls, params)
   number_of_rolls = params["rolls"] || "1"
   number_of_sides = params["sides"] || "6"
 
-  wrap(client, 'h1') { client.puts "#{number_of_rolls} rolls of #{number_of_sides}-sided dice" }
+  number_of_sides = "1000" if number_of_sides.to_i > 1000
+
+  wrap(client, 'h1') { client.puts "#{rolls.size} rolls of #{number_of_sides}-sided die" }
+  wrap(client, 'strong') { client.puts "#{number_of_rolls} was too many. Reduced to #{rolls.size} rolls."} if number_of_rolls.to_i > 1000
   hr client
+
 
   if rolls.size > 1
     print_summary client, rolls
@@ -59,6 +63,7 @@ def roll_dice(params, client)
   rolls = []
 
   number_of_rolls.to_i.times do |num|
+    break if num + 1 > 1000
     rolls << rand(number_of_sides.to_i) + 1
   end
 
