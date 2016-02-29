@@ -4,9 +4,15 @@ require 'tilt/erubis'
 
 helpers do
   def in_paragraphs(text)
-    text.split("\n\n").map do |line|
-      "<p>#{line}</p>"
-    end.join
+    return_text = ''
+    text.split("\n\n").each_with_index do |line, index|
+      return_text += "<p id='paragraph-#{index}'>#{line}</p>"
+    end
+    return_text
+  end
+
+  def highlight_phrase(paragraph, phrase)
+    paragraph.gsub(phrase, "<strong>#{phrase}</strong>")
   end
 end
 
@@ -27,6 +33,22 @@ get '/chapter/:number' do
   @chapter = File.read("data/chp#{@chapter_number}.txt")
 
   erb :chapter
+end
+
+get '/search' do
+  @title = 'Search'
+  search_params = params['query']
+  if search_params
+    @possible_chapters = []
+    @contents.each_with_index do |chapter_name, index|
+      chapter = File.read("data/chp#{index+1}.txt").split("\n\n")
+      chapter.each_with_index do |paragraph, paragraph_index|
+        @possible_chapters << [index+1, chapter_name, paragraph, paragraph_index] if paragraph.index search_params
+      end
+    end
+  end
+
+  erb :search
 end
 
 not_found do
