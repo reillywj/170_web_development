@@ -28,3 +28,7 @@ get '/chapter/:number' do
 
   erb :chapter
 end
+
+not_found do
+  redirect '/'
+end
