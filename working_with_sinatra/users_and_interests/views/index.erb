@@ -1,0 +1,6 @@
+<h1><%= @title %></h1>
+<ul>
+  <% @users.to_a.each do |user| %>
+    <li><a href="/<%= user.first%>"><%= user.first.to_s.capitalize%></a></li>
+  <% end %>
+</ul>

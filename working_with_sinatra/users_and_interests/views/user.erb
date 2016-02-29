@@ -1,0 +1,14 @@
+<h1><%= @user_name.capitalize %></h1>
+<p>Email: <%= @user[:email] %></p>
+
+<p>Interests: <%= display_interests @user%></p>
+
+<hr>
+<h3>Other Users:</h3>
+<ul>
+  <% @users.each do |user_name, information| %>
+    <% unless user_name == @user_name.to_sym %>
+      <li><a href="/<%= user_name%>"><%= user_name.capitalize%></a></li>
+    <% end %>
+  <% end %>
+</ul>
